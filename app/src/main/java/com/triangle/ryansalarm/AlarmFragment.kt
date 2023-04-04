@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TimePicker
 import androidx.constraintlayout.widget.ConstraintLayout
+import java.time.LocalDateTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +31,11 @@ class AlarmFragment : Fragment()
 		requireArguments().getString("colour") ?: "#E4E4E4"
 	}
 
+
+	private lateinit var time: TimePicker
+	private lateinit var scheduler: AndroidAlarmScheduler
+	private var alarmItem: AlarmItem? = null
+
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
@@ -35,6 +43,8 @@ class AlarmFragment : Fragment()
 			param1 = it.getString(ARG_PARAM1)
 			param2 = it.getString(ARG_PARAM2)
 		}
+
+		scheduler = AndroidAlarmScheduler(requireContext())
 	}
 
 	override fun onCreateView(
@@ -52,6 +62,27 @@ class AlarmFragment : Fragment()
 
 		val layout = view.findViewById<ConstraintLayout>(R.id.root)
 		layout?.setBackgroundColor(Color.parseColor(colour))
+
+		this.time = view.findViewById(R.id.alarm_timePicker)
+		this.time.setIs24HourView(true)
+
+		view.findViewById<Button>(R.id.alarm_button_start)
+			.setOnClickListener {
+				start()
+			}
+		view.findViewById<Button>(R.id.alarm_button_stop)
+			.setOnClickListener { stop() }
+	}
+
+	private fun start()
+	{
+		var time = LocalDateTime.now().plusSeconds(5)
+		this.alarmItem = AlarmItem(time, "Hello Alarm", 500)
+		this.alarmItem?.let ( scheduler::Schedule )
+	}
+	private fun stop()
+	{
+		this.alarmItem?.let ( scheduler::Cancel )
 	}
 
 	companion object
