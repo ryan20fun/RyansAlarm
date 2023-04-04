@@ -2,14 +2,16 @@ package com.triangle.ryansalarm
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TimePicker
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,13 +78,25 @@ class AlarmFragment : Fragment()
 
 	private fun start()
 	{
-		var time = LocalDateTime.now().plusSeconds(5)
-		this.alarmItem = AlarmItem(time, "Hello Alarm", 500)
-		this.alarmItem?.let ( scheduler::Schedule )
+		val timePart = LocalTime.of(this.time.hour, this.time.minute)
+		val datePart = LocalDate.now()
+
+		//region Adjust date to tomorrow if time is before now
+		val nowTime = LocalTime.now()
+		if (nowTime.hour > timePart.hour
+			|| (nowTime.hour == timePart.hour && nowTime.minute > timePart.minute)
+		)
+			datePart.plusDays(1)
+		//endregion
+
+		val dateTime = LocalDateTime.of(datePart, timePart)
+		this.alarmItem = AlarmItem(dateTime, "Hello Alarm", 500)
+		this.alarmItem?.let(scheduler::Schedule)
 	}
+
 	private fun stop()
 	{
-		this.alarmItem?.let ( scheduler::Cancel )
+		this.alarmItem?.let(scheduler::Cancel)
 	}
 
 	companion object
