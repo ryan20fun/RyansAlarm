@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.LinearLayout
 import android.widget.TimePicker
+import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import java.time.LocalDate
@@ -34,9 +37,10 @@ class AlarmFragment : Fragment()
 	}
 
 
-	private lateinit var time: TimePicker
+	private lateinit var timePicker: TimePicker
 	private lateinit var scheduler: AndroidAlarmScheduler
 	private var alarmItem: AlarmItem? = null
+	private lateinit var layoutRelativeInput: LinearLayout
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -65,20 +69,42 @@ class AlarmFragment : Fragment()
 		val layout = view.findViewById<ConstraintLayout>(R.id.root)
 		layout?.setBackgroundColor(Color.parseColor(colour))
 
-		this.time = view.findViewById(R.id.alarm_timePicker)
-		this.time.setIs24HourView(true)
+		this.layoutRelativeInput = view.findViewById(R.id.alarm_layout_Spinner)
 
+		//region Time picker
+		this.timePicker = view.findViewById(R.id.alarm_timePicker)
+		this.timePicker.setIs24HourView(true)
+		//endregion
+
+		//region Buttons
 		view.findViewById<Button>(R.id.alarm_button_start)
 			.setOnClickListener {
 				start()
 			}
 		view.findViewById<Button>(R.id.alarm_button_stop)
 			.setOnClickListener { stop() }
+		//endregion
+
+		//region Relative switch
+		val toggle = view.findViewById<SwitchCompat>(R.id.alarm_use_absolute_time)
+		toggle.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+			if (isChecked)
+			{
+				this.layoutRelativeInput.visibility = View.GONE
+				this.timePicker.visibility = View.VISIBLE
+			}
+			else
+			{
+				this.layoutRelativeInput.visibility = View.VISIBLE
+				this.timePicker.visibility = View.GONE
+			}
+		}
+		//endregion
 	}
 
 	private fun start()
 	{
-		val timePart = LocalTime.of(this.time.hour, this.time.minute)
+		val timePart = LocalTime.of(this.timePicker.hour, this.timePicker.minute)
 		val datePart = LocalDate.now()
 
 		//region Adjust date to tomorrow if time is before now
