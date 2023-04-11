@@ -115,6 +115,7 @@ class AlarmFragment : Fragment()
 				this.timePicker.visibility = View.GONE
 			}
 		}
+		useAbsoluteTime.isChecked = true
 		//endregion
 	}
 
