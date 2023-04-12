@@ -165,6 +165,7 @@ class AlarmFragment : Fragment()
 	private fun stop()
 	{
 		this.alarmItem?.let(scheduler::Cancel)
+		MediaSingleton.stop()
 	}
 
 	companion object

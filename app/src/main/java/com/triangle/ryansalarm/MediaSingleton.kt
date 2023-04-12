@@ -9,8 +9,10 @@ import android.util.Log
 
 object MediaSingleton
 {
-	var player: MediaPlayer? = null
-	var handler: Handler? = null
+	var AutoStopDelayMS: Long = 5000
+
+	private var player: MediaPlayer? = null
+	private var handler: Handler? = null
 
 	fun initialise(context: Context, SoundURI: Uri)
 	{
@@ -43,14 +45,16 @@ object MediaSingleton
 		this.player!!.seekTo(0)
 		this.player!!.start()
 
-		this.handler?.postDelayed({
-			this.player?.stop()
-			Log.d("MediaSingleton", "play post delayed called")
-		}, 5000)
+		this.handler?.postDelayed(delayStop(), AutoStopDelayMS)
+	}
+
+	private fun delayStop(): () -> Unit = {
+		this.stop()
+		Log.d("MediaSingleton", "play post delayed called")
 	}
 
 	fun stop()
 	{
-		this.player!!.stop()
+		this.player?.stop()
 	}
 }
