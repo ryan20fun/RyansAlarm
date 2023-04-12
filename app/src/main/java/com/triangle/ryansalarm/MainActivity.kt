@@ -1,6 +1,7 @@
 package com.triangle.ryansalarm
 
 import android.graphics.Color
+import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity()
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		val fragmentData = listOf<FragmentData>(
+		val fragmentData = listOf(
 			FragmentData("Alarm", "#AA0000"),
 			FragmentData("Default", "#00AA00"),
 			FragmentData("Settings", "#0000AA"),
@@ -67,5 +68,20 @@ class MainActivity : AppCompatActivity()
 
 		binding.viewPager.adapter = MyAdapter(this, fragmentData)
 		mediator.attach()
+
+		// TODO: URI can be null
+		val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+		assert(null != uri)
+		MediaSingleton.initialise(
+			this,
+			uri
+		)
+	}
+
+	override fun onDestroy()
+	{
+		super.onDestroy()
+
+		MediaSingleton.cleanup()
 	}
 }
