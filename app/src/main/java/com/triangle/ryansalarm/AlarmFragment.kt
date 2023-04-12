@@ -18,6 +18,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.properties.Delegates
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,7 +40,7 @@ class AlarmFragment : Fragment()
 		requireArguments().getString("colour") ?: "#E4E4E4"
 	}
 
-
+	private var alarmID by Delegates.notNull<Int>()
 	private lateinit var timePicker: TimePicker
 	private lateinit var scheduler: AndroidAlarmScheduler
 	private var alarmItem: AlarmItem? = null
@@ -56,6 +57,7 @@ class AlarmFragment : Fragment()
 			param2 = it.getString(ARG_PARAM2)
 		}
 
+		alarmID = 500
 		scheduler = AndroidAlarmScheduler(requireContext())
 	}
 
@@ -150,14 +152,20 @@ class AlarmFragment : Fragment()
 		}
 
 		val dateTime = LocalDateTime.of(datePart, timePart)
-		this.alarmItem = AlarmItem(dateTime, msg, 500)
+		this.alarmItem = AlarmItem(dateTime, msg, this.alarmID)
 		this.alarmItem?.let(scheduler::Schedule)
-		Log.d("AlarmFragment", "Alarm scheduled for: ${ DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format( dateTime)}")
+		Log.d(
+			"AlarmFragment",
+			"Alarm scheduled for: ${
+				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(dateTime)
+			}"
+		)
 	}
 
 	private fun stop()
 	{
 		this.alarmItem?.let(scheduler::Cancel)
+		MediaSingleton.stop()
 	}
 
 	companion object
