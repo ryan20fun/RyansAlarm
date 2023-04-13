@@ -74,12 +74,15 @@ object MediaSingleton
 
 		this.handler?.postDelayed(delayStop(), AutoStopDelayMS)
 		this.volumeTimer = fixedRateTimer(name = "volume", period = 500, action = { setVolume() })
+		Log.d("MediaSingleton", "Audio started")
 	}
 
 	fun stop()
 	{
 		this.volumeTimer?.cancel()
+		this.volumeTimer = null
 		this.player?.stop()
+		Log.d("MediaSingleton", "Audio stopped")
 	}
 	//endregion
 
