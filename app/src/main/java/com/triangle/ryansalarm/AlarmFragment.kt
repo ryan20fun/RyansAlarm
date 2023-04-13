@@ -157,7 +157,7 @@ class AlarmFragment : Fragment()
 		Log.d(
 			"AlarmFragment",
 			"Alarm scheduled for: ${
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(dateTime)
+				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(dateTime)
 			}"
 		)
 	}
