@@ -16,7 +16,7 @@ object MediaSingleton
 	/**
 	 * Controls how long to wait before automatically stopping the audio playback
 	 */
-	var AutoStopDelayMS: Long = 5000
+	var AutoStopDelayMS: Long = 30 * 1000
 
 	/**
 	 * The initial volume to start playing at
@@ -102,6 +102,13 @@ object MediaSingleton
 
 		val volume = this.CurrentVolume.toFloat()
 		this.player?.setVolume(volume, volume)
+		Log.d("MediaSingleton", "Set volume to $volume")
+
+		// stop changing the volume once the maximum has been reached
+		if (Helpers.doublesEquivalent(this.CurrentVolume, this.MaxVolume))
+		{
+			this.volumeTimer?.cancel()
+		}
 	}
 	//endregion
 
