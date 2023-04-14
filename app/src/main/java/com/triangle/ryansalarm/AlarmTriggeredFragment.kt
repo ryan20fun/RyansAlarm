@@ -21,14 +21,20 @@ class AlarmTriggeredFragment : Fragment()
 {
 	private var alarmID: Int = -1
 	private var alarmMessage: String = ""
-	private lateinit var viewMessage: TextView
+	private var viewMessage: TextView? = null
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
 		arguments?.let {
-			alarmID = it.getInt(ARG_PARAM_ALARM_ID)
-			alarmMessage = it.getString(ARG_PARAM_ALARM_MSG) ?: ""
+			/* Check the default value first.
+			 * The properties have been set if they don't match.
+			 */
+			if (-1 == this.alarmID)
+				alarmID = it.getInt(ARG_PARAM_ALARM_ID)
+
+			if (this.alarmMessage.isEmpty())
+				alarmMessage = it.getString(ARG_PARAM_ALARM_MSG) ?: ""
 		}
 	}
 
@@ -64,9 +70,12 @@ class AlarmTriggeredFragment : Fragment()
 	{
 		this.alarmID = id
 		this.alarmMessage = message
-		this.viewMessage.text = this.alarmMessage
 
-		Log.d("AlarmTriggeredFragment", "Alarm data set")
+		/* Only set the message here if the view has been created,
+		 * otherwise the on created event will set the message */
+		this.viewMessage?.text = this.alarmMessage
+
+		Log.d("AlarmTriggeredFragment", "Alarm $id data set to $message")
 	}
 
 	private fun cancelAlarm()
