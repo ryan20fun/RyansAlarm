@@ -11,6 +11,7 @@ class MainActivity : AppCompatActivity()
 {
 	private lateinit var binding: ActivityMainBinding
 	private lateinit var mediator: TabLayoutMediator
+	private lateinit var adapter: MyAdapter
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
@@ -30,14 +31,10 @@ class MainActivity : AppCompatActivity()
 			tab.text = fragmentData[position].Title
 		}
 
-		binding.viewPager.adapter = MyAdapter(this, fragmentData)
+		this.adapter = MyAdapter(this, fragmentData)
+		binding.viewPager.adapter = this.adapter
 		mediator.attach()
 
-		// TODO: select the alarm tab temporarily
-		var tab = binding.tabs.getTabAt(1)
-		binding.tabs.selectTab(tab)
-
-		// TODO: URI can be null
 		val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
 		assert(null != uri)
 		MediaSingleton.initialise(
@@ -47,10 +44,12 @@ class MainActivity : AppCompatActivity()
 
 		// switch to the alarm triggered fragment
 		MediaSingleton.listenerActivity = {
-			var tab = binding.tabs.getTabAt(2)
+			val tab = binding.tabs.getTabAt(2)
 			binding.tabs.selectTab(tab)
 
-			// TODO: update tab data
+			val atf = this.adapter.fragments[2] as AlarmTriggeredFragment
+			// TODO: get alarm data for this
+			atf.setData(0, "Triggered")
 
 			Log.d("MainActivity", "Switched to alarm triggered tab fragment")
 		}

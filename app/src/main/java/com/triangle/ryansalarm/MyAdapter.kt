@@ -26,6 +26,8 @@ class ViewPagerFragment : Fragment()
 class MyAdapter(activity: AppCompatActivity, private val fragmentData: List<FragmentData>) :
 	FragmentStateAdapter(activity)
 {
+	val fragments: MutableMap<Int, Fragment> = mutableMapOf()
+
 	override fun getItemCount(): Int
 	{
 		return fragmentData.size
@@ -34,7 +36,7 @@ class MyAdapter(activity: AppCompatActivity, private val fragmentData: List<Frag
 	@Throws(RuntimeException::class)
 	override fun createFragment(position: Int): Fragment
 	{
-		return when (position)
+		val fragment = when (position)
 		{
 			0 -> ViewPagerFragment().apply {
 				arguments = Bundle().apply { putString("colour", fragmentData[position].Colour) }
@@ -48,5 +50,8 @@ class MyAdapter(activity: AppCompatActivity, private val fragmentData: List<Frag
 
 			else -> throw NotImplementedError()
 		}
+
+		this.fragments[position] = fragment
+		return fragment
 	}
 }
