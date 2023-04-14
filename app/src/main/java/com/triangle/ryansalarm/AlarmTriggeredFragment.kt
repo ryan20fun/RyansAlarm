@@ -19,15 +19,16 @@ private const val ARG_PARAM_ALARM_MSG = "alarm_msg"
  */
 class AlarmTriggeredFragment : Fragment()
 {
-	private var alarmID: Int? = null
-	private var alarmMessage: String? = null
+	private var alarmID: Int = -1
+	private var alarmMessage: String = ""
+	private lateinit var viewMessage: TextView
 
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
 		arguments?.let {
 			alarmID = it.getInt(ARG_PARAM_ALARM_ID)
-			alarmMessage = it.getString(ARG_PARAM_ALARM_MSG)
+			alarmMessage = it.getString(ARG_PARAM_ALARM_MSG) ?: ""
 		}
 	}
 
@@ -44,7 +45,8 @@ class AlarmTriggeredFragment : Fragment()
 	{
 		super.onViewCreated(view, savedInstanceState)
 
-		view.findViewById<TextView>(R.id.alarmtriggered_Message).text = this.alarmMessage ?: ""
+		this.viewMessage = view.findViewById(R.id.alarmtriggered_Message)
+		setData(this.alarmID, this.alarmMessage)
 
 		//region Buttons
 		view.findViewById<Button>(R.id.alarmtriggered_CancelButton)
@@ -58,8 +60,18 @@ class AlarmTriggeredFragment : Fragment()
 		//endregion
 	}
 
+	fun setData(id:Int, message:String)
+	{
+		this.alarmID = id
+		this.alarmMessage = message
+		this.viewMessage.text = this.alarmMessage
+
+		Log.d("AlarmTriggeredFragment", "Alarm data set")
+	}
+
 	private fun cancelAlarm()
 	{
+		// TODO: implement
 		Log.d("AlarmTriggeredFragment", "Alarm $alarmID cancelled")
 	}
 
