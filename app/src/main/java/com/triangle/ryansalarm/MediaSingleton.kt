@@ -32,6 +32,8 @@ object MediaSingleton
 	 * The volume increase per step
 	 */
 	var VolumeStep: Double = 0.05
+
+	var listenerActivity: (()->Unit)? = null
 	//endregion
 
 	//region Public method(s)
@@ -75,6 +77,8 @@ object MediaSingleton
 		this.handler?.postDelayed(delayStop(), AutoStopDelayMS)
 		this.volumeTimer = fixedRateTimer(name = "volume", period = 500, action = { setVolume() })
 		Log.d("MediaSingleton", "Audio started")
+
+		listenerActivity?.invoke()
 	}
 
 	fun stop()
