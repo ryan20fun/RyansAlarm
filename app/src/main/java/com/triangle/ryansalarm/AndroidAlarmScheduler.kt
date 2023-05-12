@@ -32,10 +32,14 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler
 
 	override fun Cancel(Item: AlarmItem)
 	{
+		this.Cancel(Item.ID)
+	}
+	override fun Cancel(AlarmID: Int)
+	{
 		this.alarm.cancel(
 			PendingIntent.getBroadcast(
 				context,
-				Item.ID,
+				AlarmID,
 				Intent(context, AlarmReceiver::class.java),
 				PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 			)
